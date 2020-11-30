@@ -4,8 +4,11 @@ import json
 import requests
 import rdflib
 import tempfile
+import idslib_data
 
 DCAT = rdflib.Namespace("http://www.w3.org/ns/dcat#")
+
+d = idslib_data.DataBackend("https://mgds.oeg.fi.upm.es/dynamic-data/")
 
 class IDSHook():
 
@@ -47,6 +50,10 @@ class IDSHook():
 		
 			return g
 			
+	def addDatasetFile(self, file_path):
+		
+		return d.upload_file(file_path)
+			
 	def addDataset(self, g, catalog_id):
 		h = {
 			'Content-Type': 'text/n3',
@@ -81,15 +88,7 @@ class IDSHook():
 			g.parse(data=d, format='json-ld')
 		
 			for t in g.triples((None, DCAT.accessURL, None)):
-				self.download_file(t[2], destination_file)
+				idslib_data.download_file(t[2], destination_file)
 				return destination_file
-
-	def download_file(self, url, local_filename):
-		with requests.get(url, stream=True) as r:
-			r.raise_for_status()
-			with open(local_filename, 'wb') as f:
-				for chunk in r.iter_content(chunk_size=8192): 
-					f.write(chunk)
-		return local_filename
 		
 
