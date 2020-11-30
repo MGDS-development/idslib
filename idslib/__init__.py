@@ -4,7 +4,7 @@ import json
 import requests
 import rdflib
 import tempfile
-import idslib_data
+import idslib.data
 
 DCAT = rdflib.Namespace("http://www.w3.org/ns/dcat#")
 
