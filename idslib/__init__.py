@@ -8,13 +8,13 @@ import idslib_data
 
 DCAT = rdflib.Namespace("http://www.w3.org/ns/dcat#")
 
-d = idslib_data.DataBackend("https://mgds.oeg.fi.upm.es/dynamic-data/")
-
 class IDSHook():
 
-	def __init__(self, broker_endpoint, api_key):
+	def __init__(self, broker_endpoint, api_key, data_backend, data_backend_key):
 		self.broker_endpoint = broker_endpoint
 		self.api_key = api_key
+		self.data_backend = data_backend
+		self.data_backend_key = data_backend_key
 		
 	def getCatalogs(self):
 		r = requests.get(self.broker_endpoint + "catalogues/")
@@ -51,6 +51,8 @@ class IDSHook():
 			return g
 			
 	def addDatasetFile(self, file_path):
+		
+		d = idslib_data.DataBackend(self.data_backend, self.data_backend_key)
 		
 		return d.upload_file(file_path)
 			
